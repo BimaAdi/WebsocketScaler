@@ -20,7 +20,7 @@ func TestRedisScaler(t *testing.T) {
 	})
 	ctx := context.Background()
 	scaler := scaler.NewRedisScaler(rdb, ctx, "ws_channel")
-	ws_router := wsclient.NewTestWSClient()
+	ws_router := wsclient.NewMockWSClient()
 	go scaler.Subscribe(ws_router)
 
 	// When
