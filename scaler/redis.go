@@ -37,7 +37,7 @@ func (rs RedisScaler) Subscribe(ws WebsocketScaler.WSClientContract) {
 
 		payload2, err := WebsocketScaler.UnmarshalMessageToMultipleUser(msg.Payload)
 		if err == nil {
-			ws.SendToMultipleUser(payload2.SocketIds, payload.Payload)
+			ws.SendToMultipleUser(payload2.SocketIds, payload2.Payload)
 		}
 
 		payload3, err := WebsocketScaler.UnmarshalMessageToaAll(msg.Payload)
