@@ -1,25 +1,17 @@
 package scaler_test
 
 import (
-	"context"
 	"testing"
 	"time"
 
 	"github.com/BimaAdi/WebsocketScaler/scaler"
 	"github.com/BimaAdi/WebsocketScaler/wsclient"
-	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRedisScaler(t *testing.T) {
+func TestGoChannelScaler(t *testing.T) {
 	// Given
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "", // no password set
-		DB:       0,  // use default DB
-	})
-	ctx := context.Background()
-	scl := scaler.NewRedisScaler(rdb, ctx, "ws_channel")
+	scl := scaler.NewGoChannelScaler()
 	ws_router := wsclient.NewMockWSClient()
 	go scl.Subscribe(ws_router)
 
