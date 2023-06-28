@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTestWSClient(t *testing.T) {
+func TestMockWSClient(t *testing.T) {
 	// Given
 	ws_router := wsclient.NewMockWSClient()
 
@@ -56,7 +56,7 @@ func (e *Event) OnDisconnect(s WebsocketScaler.ScalerContract, socket_id string)
 	s.SendToAll("user with socket_id " + socket_id + " disconnect")
 }
 
-func TestTestWSClientCreateRoute(t *testing.T) {
+func TestMockWSClientCreateRoute(t *testing.T) {
 	// Given
 	ws_router := wsclient.NewMockWSClient()
 	test_scaler := scaler.NewMockScaler()
