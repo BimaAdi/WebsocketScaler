@@ -1,4 +1,4 @@
-package wsclient
+package wsclientfiber
 
 import (
 	"github.com/BimaAdi/WebsocketScaler/core"
