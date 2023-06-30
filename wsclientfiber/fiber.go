@@ -49,6 +49,7 @@ func (fw *FiberWebsocket) CreateWebsocketRoute(e core.Event, s core.ScalerContra
 		// 	// log.Println(c.Params("id"))       // 123
 		// 	// log.Println(c.Query("v"))         // 1.0
 		// 	// log.Println(c.Cookies("session")) // ""
+
 		socket_id := core.GenerateUserId()
 		fw.websocket_conns[socket_id] = c
 		e.OnConnect(s, socket_id, core.Params{
