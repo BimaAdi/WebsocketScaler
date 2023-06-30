@@ -1,17 +1,17 @@
-package wsclient_test
+package wsclientmock_test
 
 import (
 	"testing"
 
-	"github.com/BimaAdi/WebsocketScaler"
-	"github.com/BimaAdi/WebsocketScaler/scaler"
-	"github.com/BimaAdi/WebsocketScaler/wsclient"
+	"github.com/BimaAdi/WebsocketScaler/core"
+	"github.com/BimaAdi/WebsocketScaler/scalermock"
+	"github.com/BimaAdi/WebsocketScaler/wsclientmock"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestMockWSClient(t *testing.T) {
 	// Given
-	ws_router := wsclient.NewMockWSClient()
+	ws_router := wsclientmock.NewMockWSClient()
 
 	// When
 	ws_router.SendToSingleUser("a", `{"hello": "a"}`)
@@ -19,7 +19,7 @@ func TestMockWSClient(t *testing.T) {
 	ws_router.SendToAll(`{"hello": "all"}`)
 
 	// Expect
-	expect := []wsclient.CommandLog{
+	expect := []wsclientmock.CommandLog{
 		{
 			Command: "send_to_single_user",
 			Payload: `{"hello": "a"}`,
@@ -42,35 +42,35 @@ func TestMockWSClient(t *testing.T) {
 type Event struct {
 }
 
-func (e *Event) OnConnect(s WebsocketScaler.ScalerContract, socket_id string, params WebsocketScaler.Params) {
+func (e *Event) OnConnect(s core.ScalerContract, socket_id string, params core.Params) {
 	s.SendToAll("someone connect with socket_id " + socket_id)
 
 }
 
-func (e *Event) OnMessage(s WebsocketScaler.ScalerContract, socket_id string, payload string) {
+func (e *Event) OnMessage(s core.ScalerContract, socket_id string, payload string) {
 	s.SendToAll("got message from " + socket_id + ": " + payload)
 
 }
 
-func (e *Event) OnDisconnect(s WebsocketScaler.ScalerContract, socket_id string) {
+func (e *Event) OnDisconnect(s core.ScalerContract, socket_id string) {
 	s.SendToAll("user with socket_id " + socket_id + " disconnect")
 }
 
 func TestMockWSClientCreateRoute(t *testing.T) {
 	// Given
-	ws_router := wsclient.NewMockWSClient()
-	test_scaler := scaler.NewMockScaler()
+	ws_router := wsclientmock.NewMockWSClient()
+	test_scaler := scalermock.NewMockScaler()
 	event := Event{}
 	test_scaler.Subscribe(ws_router)
 	ws_router.CreateWebsocketRoute(&event, test_scaler)
 
 	// When
-	ws_router.CallOnConnect("AAAA", WebsocketScaler.Params{})
+	ws_router.CallOnConnect("AAAA", core.Params{})
 	ws_router.CallOnMessage("AAAA", "hello everyone")
 	ws_router.CallOnDisconnect("AAAA")
 
 	// Expect
-	expect := []scaler.CommandLog{
+	expect := []scalermock.CommandLog{
 		{
 			Command: "send_to_all",
 			Payload: "someone connect with socket_id AAAA",

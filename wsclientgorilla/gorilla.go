@@ -1,10 +1,10 @@
-package wsclient
+package wsclientgorilla
 
 import (
 	"log"
 	"net/http"
 
-	"github.com/BimaAdi/WebsocketScaler"
+	"github.com/BimaAdi/WebsocketScaler/core"
 	"github.com/gorilla/websocket"
 )
 
@@ -46,7 +46,7 @@ func (gw GorillaWebsocket) SendToAll(payload string) {
 	}
 }
 
-func (gw *GorillaWebsocket) CreateWebsocketRoute(e WebsocketScaler.Event, s WebsocketScaler.ScalerContract) func(http.ResponseWriter, *http.Request) {
+func (gw *GorillaWebsocket) CreateWebsocketRoute(e core.Event, s core.ScalerContract) func(http.ResponseWriter, *http.Request) {
 	gw.Upgrader = websocket.Upgrader{}
 	return func(w http.ResponseWriter, r *http.Request) {
 		c, err := gw.Upgrader.Upgrade(w, r, nil)
@@ -54,11 +54,11 @@ func (gw *GorillaWebsocket) CreateWebsocketRoute(e WebsocketScaler.Event, s Webs
 			log.Print("upgrade:", err)
 			return
 		}
-		socket_id := WebsocketScaler.GenerateRandomString(25)
+		socket_id := core.GenerateUserId()
 		gw.websocket_conns[socket_id] = c
 		// TODO url Params for gorilla websocket
 		// log.Println(r.URL)
-		e.OnConnect(s, socket_id, WebsocketScaler.Params{
+		e.OnConnect(s, socket_id, core.Params{
 			Path:        "",
 			QueryParams: map[string]string{},
 		})

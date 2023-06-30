@@ -1,4 +1,4 @@
-package WebsocketScaler
+package core
 
 type Params struct {
 	Path        string

@@ -1,7 +1,7 @@
 package wsclient
 
 import (
-	"github.com/BimaAdi/WebsocketScaler"
+	"github.com/BimaAdi/WebsocketScaler/core"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 )
@@ -42,16 +42,16 @@ func (fw FiberWebsocket) SendToAll(payload string) {
 	}
 }
 
-func (fw *FiberWebsocket) CreateWebsocketRoute(e WebsocketScaler.Event, s WebsocketScaler.ScalerContract) func(c *fiber.Ctx) error {
+func (fw *FiberWebsocket) CreateWebsocketRoute(e core.Event, s core.ScalerContract) func(c *fiber.Ctx) error {
 	return websocket.New(func(c *websocket.Conn) {
 		// 	// c.Locals is added to the *websocket.Conn
 		// 	// log.Println(c.Locals("allowed"))  // true
 		// 	// log.Println(c.Params("id"))       // 123
 		// 	// log.Println(c.Query("v"))         // 1.0
 		// 	// log.Println(c.Cookies("session")) // ""
-		socket_id := WebsocketScaler.GenerateRandomString(25)
+		socket_id := core.GenerateUserId()
 		fw.websocket_conns[socket_id] = c
-		e.OnConnect(s, socket_id, WebsocketScaler.Params{
+		e.OnConnect(s, socket_id, core.Params{
 			Path:        c.Params("id"),
 			QueryParams: map[string]string{},
 		})

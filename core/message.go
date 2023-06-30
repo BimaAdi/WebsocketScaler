@@ -1,4 +1,4 @@
-package WebsocketScaler
+package core
 
 import (
 	"encoding/json"

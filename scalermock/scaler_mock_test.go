@@ -1,17 +1,17 @@
-package scaler_test
+package scalermock_test
 
 import (
 	"testing"
 
-	"github.com/BimaAdi/WebsocketScaler/scaler"
-	"github.com/BimaAdi/WebsocketScaler/wsclient"
+	"github.com/BimaAdi/WebsocketScaler/scalermock"
+	"github.com/BimaAdi/WebsocketScaler/wsclientmock"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestMockScaler(t *testing.T) {
 	// Given
-	scl := scaler.NewMockScaler()
-	ws_router := wsclient.NewMockWSClient()
+	scl := scalermock.NewMockScaler()
+	ws_router := wsclientmock.NewMockWSClient()
 	scl.Subscribe(ws_router)
 
 	// When
@@ -20,7 +20,7 @@ func TestMockScaler(t *testing.T) {
 	scl.SendToAll(`{"hello": "all"}`)
 
 	// Expect
-	expect := []wsclient.CommandLog{
+	expect := []wsclientmock.CommandLog{
 		{
 			Command: "send_to_single_user",
 			Payload: `{"hello": "a"}`,

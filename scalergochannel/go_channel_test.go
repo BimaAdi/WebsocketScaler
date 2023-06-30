@@ -1,26 +1,18 @@
-package scaler_test
+package scalergochannel_test
 
 import (
-	"context"
 	"testing"
 	"time"
 
-	"github.com/BimaAdi/WebsocketScaler/scaler"
-	"github.com/BimaAdi/WebsocketScaler/wsclient"
-	"github.com/redis/go-redis/v9"
+	"github.com/BimaAdi/WebsocketScaler/scalergochannel"
+	"github.com/BimaAdi/WebsocketScaler/wsclientmock"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRedisScaler(t *testing.T) {
+func TestGoChannelScaler(t *testing.T) {
 	// Given
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "", // no password set
-		DB:       0,  // use default DB
-	})
-	ctx := context.Background()
-	scl := scaler.NewRedisScaler(rdb, ctx, "ws_channel")
-	ws_router := wsclient.NewMockWSClient()
+	scl := scalergochannel.NewGoChannelScaler()
+	ws_router := wsclientmock.NewMockWSClient()
 	go scl.Subscribe(ws_router)
 
 	// When
@@ -31,7 +23,7 @@ func TestRedisScaler(t *testing.T) {
 	time.Sleep(2 * time.Second) // wait for all message finish
 
 	// Expect
-	expect := []wsclient.CommandLog{
+	expect := []wsclientmock.CommandLog{
 		{
 			Command: "send_to_single_user",
 			Payload: `{"hello": "a"}`,

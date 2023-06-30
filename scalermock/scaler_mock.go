@@ -1,6 +1,6 @@
-package scaler
+package scalermock
 
-import "github.com/BimaAdi/WebsocketScaler"
+import "github.com/BimaAdi/WebsocketScaler/core"
 
 type CommandLog struct {
 	Command string // send_to_single_user, send_to_multiple_user, send_to_all
@@ -9,14 +9,14 @@ type CommandLog struct {
 
 type MockScaler struct {
 	Logs []CommandLog
-	ws   WebsocketScaler.WSClientContract
+	ws   core.WSClientContract
 }
 
 func NewMockScaler() *MockScaler {
 	return &MockScaler{}
 }
 
-func (ts *MockScaler) Subscribe(ws WebsocketScaler.WSClientContract) {
+func (ts *MockScaler) Subscribe(ws core.WSClientContract) {
 	ts.ws = ws
 }
 

@@ -1,4 +1,4 @@
-package wsclient_test
+package wsclientgorilla_test
 
 import (
 	"net/http"
@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/BimaAdi/WebsocketScaler"
-	"github.com/BimaAdi/WebsocketScaler/scaler"
-	"github.com/BimaAdi/WebsocketScaler/wsclient"
+	"github.com/BimaAdi/WebsocketScaler/core"
+	"github.com/BimaAdi/WebsocketScaler/scalermock"
+	"github.com/BimaAdi/WebsocketScaler/wsclientgorilla"
 	"github.com/gorilla/websocket"
 	"github.com/stretchr/testify/assert"
 )
@@ -17,22 +17,22 @@ import (
 type EventGorilla struct {
 }
 
-func (e *EventGorilla) OnConnect(s WebsocketScaler.ScalerContract, socket_id string, params WebsocketScaler.Params) {
+func (e *EventGorilla) OnConnect(s core.ScalerContract, socket_id string, params core.Params) {
 	s.SendToSingleUser(socket_id, "someone connect")
 }
 
-func (e *EventGorilla) OnMessage(s WebsocketScaler.ScalerContract, socket_id string, payload string) {
+func (e *EventGorilla) OnMessage(s core.ScalerContract, socket_id string, payload string) {
 	s.SendToAll("got message " + payload)
 }
 
-func (e *EventGorilla) OnDisconnect(s WebsocketScaler.ScalerContract, socket_id string) {
+func (e *EventGorilla) OnDisconnect(s core.ScalerContract, socket_id string) {
 	s.SendToAll("somenone disconnect")
 }
 
 func TestGorillaWSClient(t *testing.T) {
 	// Given
-	ws_router := wsclient.NewGorillaWebsocket()
-	test_scaler := scaler.NewMockScaler()
+	ws_router := wsclientgorilla.NewGorillaWebsocket()
+	test_scaler := scalermock.NewMockScaler()
 	event := EventGorilla{}
 	test_scaler.Subscribe(ws_router)
 	router := ws_router.CreateWebsocketRoute(&event, test_scaler)
@@ -57,7 +57,7 @@ func TestGorillaWSClient(t *testing.T) {
 
 	// Expect
 	time.Sleep(2 * time.Second) // wait for all message send
-	expect := []scaler.CommandLog{
+	expect := []scalermock.CommandLog{
 		{
 			Command: "send_to_single_user",
 			Payload: "someone connect",

@@ -1,9 +1,9 @@
-package scaler
+package scalergoredis
 
 import (
 	"context"
 
-	"github.com/BimaAdi/WebsocketScaler"
+	"github.com/BimaAdi/WebsocketScaler/core"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -21,7 +21,7 @@ func NewRedisScaler(rdb *redis.Client, ctx context.Context, channel string) Redi
 	}
 }
 
-func (rs RedisScaler) Subscribe(ws WebsocketScaler.WSClientContract) {
+func (rs RedisScaler) Subscribe(ws core.WSClientContract) {
 	pubsub := rs.Rdb.Subscribe(rs.Ctx, rs.Channel)
 	defer pubsub.Close()
 	for {
@@ -30,17 +30,17 @@ func (rs RedisScaler) Subscribe(ws WebsocketScaler.WSClientContract) {
 			panic(err)
 		}
 
-		payload, err := WebsocketScaler.UnmarshalMessageToSingleUser(msg.Payload)
+		payload, err := core.UnmarshalMessageToSingleUser(msg.Payload)
 		if err == nil {
 			ws.SendToSingleUser(payload.SocketId, payload.Payload)
 		}
 
-		payload2, err := WebsocketScaler.UnmarshalMessageToMultipleUser(msg.Payload)
+		payload2, err := core.UnmarshalMessageToMultipleUser(msg.Payload)
 		if err == nil {
 			ws.SendToMultipleUser(payload2.SocketIds, payload2.Payload)
 		}
 
-		payload3, err := WebsocketScaler.UnmarshalMessageToaAll(msg.Payload)
+		payload3, err := core.UnmarshalMessageToaAll(msg.Payload)
 		if err == nil {
 			ws.SendToAll(payload3.Payload)
 		}
@@ -49,7 +49,7 @@ func (rs RedisScaler) Subscribe(ws WebsocketScaler.WSClientContract) {
 }
 
 func (rs RedisScaler) SendToSingleUser(socket_id string, payload string) {
-	data, err := WebsocketScaler.MarshalMessageToSingleUser(socket_id, payload)
+	data, err := core.MarshalMessageToSingleUser(socket_id, payload)
 	if err != nil {
 		panic(err)
 	}
@@ -57,7 +57,7 @@ func (rs RedisScaler) SendToSingleUser(socket_id string, payload string) {
 }
 
 func (rs RedisScaler) SendToMultipleUser(socket_ids []string, payload string) {
-	data, err := WebsocketScaler.MarshalMessageToMultipleUser(socket_ids, payload)
+	data, err := core.MarshalMessageToMultipleUser(socket_ids, payload)
 	if err != nil {
 		panic(err)
 	}
@@ -65,7 +65,7 @@ func (rs RedisScaler) SendToMultipleUser(socket_ids []string, payload string) {
 }
 
 func (rs RedisScaler) SendToAll(payload string) {
-	data, err := WebsocketScaler.MarshalMessageToAll(payload)
+	data, err := core.MarshalMessageToAll(payload)
 	if err != nil {
 		panic(err)
 	}

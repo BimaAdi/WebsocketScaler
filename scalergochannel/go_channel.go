@@ -1,7 +1,7 @@
-package scaler
+package scalergochannel
 
 import (
-	"github.com/BimaAdi/WebsocketScaler"
+	"github.com/BimaAdi/WebsocketScaler/core"
 )
 
 type GoChannelScaler struct {
@@ -15,23 +15,23 @@ func NewGoChannelScaler() GoChannelScaler {
 	}
 }
 
-func (gcs GoChannelScaler) Subscribe(ws WebsocketScaler.WSClientContract) {
+func (gcs GoChannelScaler) Subscribe(ws core.WSClientContract) {
 	isChannelOpen := true
 	var v string
 	defer close(gcs.c)
 	for isChannelOpen {
 		v, isChannelOpen = <-gcs.c
-		payload, err := WebsocketScaler.UnmarshalMessageToSingleUser(v)
+		payload, err := core.UnmarshalMessageToSingleUser(v)
 		if err == nil {
 			ws.SendToSingleUser(payload.SocketId, payload.Payload)
 		}
 
-		payload2, err := WebsocketScaler.UnmarshalMessageToMultipleUser(v)
+		payload2, err := core.UnmarshalMessageToMultipleUser(v)
 		if err == nil {
 			ws.SendToMultipleUser(payload2.SocketIds, payload2.Payload)
 		}
 
-		payload3, err := WebsocketScaler.UnmarshalMessageToaAll(v)
+		payload3, err := core.UnmarshalMessageToaAll(v)
 		if err == nil {
 			ws.SendToAll(payload3.Payload)
 		}
@@ -39,7 +39,7 @@ func (gcs GoChannelScaler) Subscribe(ws WebsocketScaler.WSClientContract) {
 }
 
 func (gcs GoChannelScaler) SendToSingleUser(socket_id string, payload string) {
-	data, err := WebsocketScaler.MarshalMessageToSingleUser(socket_id, payload)
+	data, err := core.MarshalMessageToSingleUser(socket_id, payload)
 	if err != nil {
 		panic(err)
 	}
@@ -47,7 +47,7 @@ func (gcs GoChannelScaler) SendToSingleUser(socket_id string, payload string) {
 }
 
 func (gcs GoChannelScaler) SendToMultipleUser(socket_ids []string, payload string) {
-	data, err := WebsocketScaler.MarshalMessageToMultipleUser(socket_ids, payload)
+	data, err := core.MarshalMessageToMultipleUser(socket_ids, payload)
 	if err != nil {
 		panic(err)
 	}
@@ -55,7 +55,7 @@ func (gcs GoChannelScaler) SendToMultipleUser(socket_ids []string, payload strin
 }
 
 func (gcs GoChannelScaler) SendToAll(payload string) {
-	data, err := WebsocketScaler.MarshalMessageToAll(payload)
+	data, err := core.MarshalMessageToAll(payload)
 	if err != nil {
 		panic(err)
 	}

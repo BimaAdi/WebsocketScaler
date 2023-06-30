@@ -1,6 +1,6 @@
-package wsclient
+package wsclientmock
 
-import "github.com/BimaAdi/WebsocketScaler"
+import "github.com/BimaAdi/WebsocketScaler/core"
 
 type CommandLog struct {
 	Command string // send_to_single_user, send_to_multiple_user, send_to_all
@@ -9,8 +9,8 @@ type CommandLog struct {
 
 type MockWSClient struct {
 	Logs   []CommandLog
-	Event  WebsocketScaler.Event
-	Scaler WebsocketScaler.ScalerContract
+	Event  core.Event
+	Scaler core.ScalerContract
 }
 
 func NewMockWSClient() *MockWSClient {
@@ -41,12 +41,12 @@ func (twsc *MockWSClient) SendToAll(payload string) {
 	})
 }
 
-func (twsc *MockWSClient) CreateWebsocketRoute(e WebsocketScaler.Event, s WebsocketScaler.ScalerContract) {
+func (twsc *MockWSClient) CreateWebsocketRoute(e core.Event, s core.ScalerContract) {
 	twsc.Event = e
 	twsc.Scaler = s
 }
 
-func (twsc *MockWSClient) CallOnConnect(socket_id string, params WebsocketScaler.Params) {
+func (twsc *MockWSClient) CallOnConnect(socket_id string, params core.Params) {
 	if twsc.Event == nil {
 		panic("event not found")
 	}
